@@ -5,7 +5,7 @@ void button_init(button_t* btn, pin_t pin) {
     // associated hardware what it should do
 
     // (Hint), you'll want to set up an interrupt!
-}
+} 
 
 void button_set_callback(button_t* btn, void (*cb)(button_t* ctx), void* ctx) {
     // Update the button struct to set the user callback
