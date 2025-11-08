@@ -6,9 +6,12 @@
 static button_t* s_button_map[40] = { 0 };
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     // (Hint), you'll want to set up an interrupt!
 } 
 =======
+=======
+>>>>>>> Stashed changes
 <<<<<<< HEAD
 void button_init(button_t* btn, pin_t pin) {
     // Store pin and initialize callback/context
@@ -32,6 +35,9 @@ void button_init(button_t* btn, pin_t pin) {
     // (Hint), you'll want to set up an interrupt!
 } 
 >>>>>>> 8979fd71596f837d25d17399f833fd20f03ddea0
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 
 void button_set_callback(button_t* btn, void (*cb)(button_t* ctx), void* ctx) {
