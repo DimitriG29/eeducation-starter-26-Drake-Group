@@ -1,47 +1,12 @@
 #include "button.h"
 
-// Small registry to map pin numbers to button_t pointers so the ISR
-// can find the correct button context. Size chosen to cover typical
-// GPIO numbers used in this project (0..39).
-static button_t* s_button_map[40] = { 0 };
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-    // (Hint), you'll want to set up an interrupt!
-} 
-=======
-=======
->>>>>>> Stashed changes
-<<<<<<< HEAD
 void button_init(button_t* btn, pin_t pin) {
-    // Store pin and initialize callback/context
-    btn->pin = pin;
-    btn->callback = NULL;
-    btn->ctx = NULL;
-
-    // Configure hardware pin as input with internal pull-up (buttons are active-low)
-    pinMode(pin, INPUT_PULLUP);
-
-    // Register button pointer for the given pin so the interrupt handler
-    // can look it up and call the correct callback.
-    if ((int)pin >= 0 && (int)pin < (int)(sizeof(s_button_map)/sizeof(s_button_map[0]))) {
-        s_button_map[(int)pin] = btn;
-    }
-
-    // Attach an interrupt for this pin (attach_button_interrupt will look up the context)
-    attach_button_interrupt(pin);
+    pinMode(pin, INPUT);
+    attach_button_interrupt(btn, pin);
 }
-=======
-    // (Hint), you'll want to set up an interrupt!
-} 
->>>>>>> 8979fd71596f837d25d17399f833fd20f03ddea0
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
 
 void button_set_callback(button_t* btn, void (*cb)(button_t* ctx), void* ctx) {
-    // Update the button struct to set the user callback
     btn->callback = cb;
     btn->ctx = ctx;
 }
@@ -58,7 +23,8 @@ static void __button_callback(void *ctx) {
     button_t *btn = (button_t *)(ctx);
 
     // Something has triggered the interrupt, what should happen?
-    // Perhaps call the user callback?
+    // Perhaps call the user callback?g
+
     if (!btn) return;
 
     // Call user callback if set. Note: this runs in ISR context on some platforms.
@@ -67,13 +33,6 @@ static void __button_callback(void *ctx) {
     }
 }
 
-void attach_button_interrupt(pin_t pin) {
-    // Look up registered button for this pin (may be NULL)
-    void* ctx = NULL;
-    if ((int)pin >= 0 && (int)pin < (int)(sizeof(s_button_map)/sizeof(s_button_map[0]))) {
-        ctx = (void*)s_button_map[(int)pin];
-    }
-
-    // Attach the argument-taking interrupt handler. Use FALLING so press (active-low)
-    attachInterruptArg(digitalPinToInterrupt(pin), __button_callback, ctx, FALLING);
+void attach_button_interrupt(button_t *button, pin_t pin) {
+    attachInterruptArg(digitalPinToInterrupt(pin), __button_callback, button, RISING);
 }

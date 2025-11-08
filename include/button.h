@@ -46,7 +46,7 @@ bool button_read(const button_t* btn);
  * 
  * @param pin        The input pin number.
  */
-void attach_button_interrupt(pin_t pin);
+void attach_button_interrupt(button_t *btn, pin_t pin);
 
 
 #endif  // __BUTTON_H__
