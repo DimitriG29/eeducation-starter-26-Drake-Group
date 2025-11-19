@@ -3,6 +3,7 @@
 static void __encoder_isr_a(void* ctx) 
 {
     encoder_t* enc = (encoder_t*)ctx;
+    Serial.printf("spinning clockwise\n");
 }
 
 static void __encoder_isr_b(void* ctx) 
@@ -10,7 +11,7 @@ static void __encoder_isr_b(void* ctx)
     //intialize enc
     encoder_t* enc = (encoder_t*)ctx;
     //read new state + store old to compare
-    int new_state = (digitalRead(pin_a) << 1) | digitalRead(pin_b);
+    int new_state = (digitalRead(enc->pin_a) << 1) | digitalRead(enc->pin_b);
     int old = enc->last_state;
     //no change
     if (new_state == old) return;
@@ -21,14 +22,15 @@ static void __encoder_isr_b(void* ctx)
     //call funct
     if (enc->spin_cb) 
     {
-        enc->spin_cb(enc, delta);
+        enc->spin_cb(enc, change);
     }
+    Serial.printf("spinning counterclockwise\n");
 }
 
 static void __encoder_isr_btn(void* ctx) 
 {
     encoder_t* enc = (encoder_t*)ctx;
-    if (!ctx) return;
+    if (!enc) return;
     // how to call the callback
     if (enc->button_cb) enc->button_cb(enc);
 }
@@ -58,7 +60,7 @@ void encoder_init(encoder_t* enc, pin_t pin_a, pin_t pin_b, pin_t pin_btn)
 }
 
 void encoder_set_spin_callback(encoder_t* enc, void (*cb)(encoder_t* enc, int32_t delta)) {
-    if (!end) return;
+    if (!enc) return;
     enc->spin_cb = cb;
 }
 
@@ -68,7 +70,7 @@ void encoder_set_button_callback(encoder_t* enc, void (*cb)(encoder_t* enc)) {
 }
 
 int32_t encoder_get_position(const encoder_t* enc) {
-    if (!enc) return;
+    if (!enc) return 0;
     return enc->position;
 }
 

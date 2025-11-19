@@ -16,7 +16,7 @@ bool button_read(const button_t* btn) {
     if (!btn) return false;
 
     // If using INPUT_PULLUP, a pressed button will read LOW (active-low)
-    return digitalRead((uint8_t)btn->pin) == LOW;
+    return digitalRead((uint8_t)btn->pin) == HIGH;
 }
 
 static void __button_callback(void *ctx) {
@@ -26,6 +26,7 @@ static void __button_callback(void *ctx) {
     // Perhaps call the user callback?g
 
     if (!btn) return;
+    Serial.printf("button callback\n");
 
     // Call user callback if set. Note: this runs in ISR context on some platforms.
     if (btn->callback) {
