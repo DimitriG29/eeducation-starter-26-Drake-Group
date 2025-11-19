@@ -58,18 +58,22 @@ void encoder_init(encoder_t* enc, pin_t pin_a, pin_t pin_b, pin_t pin_btn)
 }
 
 void encoder_set_spin_callback(encoder_t* enc, void (*cb)(encoder_t* enc, int32_t delta)) {
+    if (!end) return;
     enc->spin_cb = cb;
 }
 
 void encoder_set_button_callback(encoder_t* enc, void (*cb)(encoder_t* enc)) {
+    if (!enc) return;
     enc->button_cb = cb;
 }
 
 int32_t encoder_get_position(const encoder_t* enc) {
+    if (!enc) return;
     return enc->position;
 }
 
 void encoder_set_position(encoder_t* enc, int32_t pos) {
+    if (!enc) return;
     enc->position = pos;
 }
 
