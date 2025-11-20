@@ -16,7 +16,7 @@ bool button_read(const button_t* btn) {
     if (!btn) return false;
 
     // If using INPUT_PULLUP, a pressed button will read LOW (active-low)
-    return digitalRead((uint8_t)btn->pin) == HIGH;
+    return digitalRead((uint8_t)btn->pin) == LOW;
 }
 
 static void __button_callback(void *ctx) {

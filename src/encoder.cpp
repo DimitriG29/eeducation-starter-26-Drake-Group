@@ -1,30 +1,37 @@
 #include "encoder.h"
 
+static void __encoder_handle_step(encoder_t* enc) {
+    if (!enc) return;
+
+    int new_state = (digitalRead(enc->pin_a) << 1) | digitalRead(enc->pin_b);
+    int old = enc->last_state;
+    if (new_state == old) return;
+    int change = ((old & 1) == ((new_state >> 1) & 1)) ? -1 : +1;
+
+    enc->position += change;
+    enc->last_state = new_state;
+    if (enc->spin_cb) {
+        enc->spin_cb(enc, change);
+    }
+
+    if (change > 0) {
+        Serial.printf("spinning clockwise\n");
+    } else {
+        Serial.printf("spinning counterclockwise\n");
+    }
+}
+
+
 static void __encoder_isr_a(void* ctx) 
 {
     encoder_t* enc = (encoder_t*)ctx;
-    Serial.printf("spinning clockwise\n");
+    __encoder_handle_step(enc);
 }
 
 static void __encoder_isr_b(void* ctx) 
 {
-    //intialize enc
     encoder_t* enc = (encoder_t*)ctx;
-    //read new state + store old to compare
-    int new_state = (digitalRead(enc->pin_a) << 1) | digitalRead(enc->pin_b);
-    int old = enc->last_state;
-    //no change
-    if (new_state == old) return;
-    //else find change
-    int change = ((old & 1) == ((new_state >> 1) & 1)) ? -1 : +1;
-    enc->position += change;
-    enc->last_state = new_state;
-    //call funct
-    if (enc->spin_cb) 
-    {
-        enc->spin_cb(enc, change);
-    }
-    Serial.printf("spinning counterclockwise\n");
+    __encoder_handle_step(enc);
 }
 
 static void __encoder_isr_btn(void* ctx) 
